@@ -8,9 +8,12 @@ The python file is used to select RMY based on daily statistics distribution. It
 3) Daily smoothly and save to target save path.
 
 ## 2. Usage
-Usage: python your_script.py <your climate database . db> <cityname> <start_year> <end_year> <RMY_save_path.xlsx>
+Usage: python your_script.py <your climate database . db> <cityname / citylist.csv> <start_year> <end_year> <RMY_save_path.xlsx>
 For instance:
-python RMY_selection_daily_statistics.py Example_climate.db Beijing 2001 2020 RMY_beijing_2001_2020.xlsx
+1. python RMY_selection_daily_statistics.py Example_climate.db Beijing 2001 2020 RMY_2001_2020_Beijing.xlsx
+2. python RMY_selection_daily_statistics.py Example_climate.db citylist.csv 2001 2020 RMY_.xlsx
+When using citylist.csv, it will read the first column of your input csv file as the list of cities.
+And automatically output the RMY into a file named "RMY_save_path_{cityname}.xlsx"
 
 ## 3. Requirements
 The packages required are included in the requirements.txt file.
