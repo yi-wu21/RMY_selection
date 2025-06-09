@@ -12,3 +12,5 @@ Usage: python your_script.py <your climate database . db> <cityname> <start_year
 For instance:
 python RMY_selection_daily_statistics.py Example_climate.db Beijing 2001 2020 RMY_beijing_2001_2020.xlsx
 
+## 3. Requirements
+The packages required are included in the requirements.txt file.
