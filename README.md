@@ -14,7 +14,12 @@ For instance:
 2. python RMY_selection_daily_statistics.py Example_climate.db citylist.csv 2001 2020 RMY_.xlsx
 
 When using citylist.csv, it will read the first column of your input csv file as the list of cities.
-And automatically output the RMY into a file named "RMY_save_path_{cityname}.xlsx". The city list should be included in your Climate db file.
+And automatically output the RMY into a file named "<RMY_save_path>_{cityname}.xlsx". 
+
+
+Notes: 
+1. The city list should be included in your Climate db file.
+2. The example of output RMY data is provided in the folder named "RMY_data"
 
 ## 3. Requirements
 The packages required are included in the requirements.txt file.
