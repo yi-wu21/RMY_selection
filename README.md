@@ -12,8 +12,9 @@ Usage: python your_script.py <your climate database . db> <cityname / citylist.c
 For instance:
 1. python RMY_selection_daily_statistics.py Example_climate.db Beijing 2001 2020 RMY_2001_2020_Beijing.xlsx
 2. python RMY_selection_daily_statistics.py Example_climate.db citylist.csv 2001 2020 RMY_.xlsx
+
 When using citylist.csv, it will read the first column of your input csv file as the list of cities.
-And automatically output the RMY into a file named "RMY_save_path_{cityname}.xlsx"
+And automatically output the RMY into a file named "RMY_save_path_{cityname}.xlsx". The city list should be included in your Climate db file.
 
 ## 3. Requirements
 The packages required are included in the requirements.txt file.
