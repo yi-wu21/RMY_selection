@@ -373,7 +373,8 @@ def reorder_tmy_new(df):
 # ======================== Third Part: Main  ========================
 def main():
     # Read cmd
-    if len(sys.argv) != 5:
+    print(sys.argv)
+    if len(sys.argv) != 6:
         print("Usage: python your_script.py <your climate database. db> <cityname> <start_year> <end_year> <RMY_save_path.xlsx>")
         print("Cityname & start_year & end_year should be in the climate database.")
         sys.exit(1)
@@ -390,6 +391,7 @@ def main():
     conn = sqlite3.connect(db_path)
     # Query
     query = "SELECT * FROM station_lib WHERE city = ?;"
+    # print(query)
     df_city = pd.read_sql_query(query, conn, params=(cityname,))
     # ERA5 database
     df_city = df_city[(df_city["type"] >= start_ID) & (df_city["type"] <= end_ID)].reset_index(drop=True)
