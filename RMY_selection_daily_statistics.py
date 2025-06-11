@@ -369,23 +369,7 @@ def reorder_tmy_new(df):
 
     return df_final
 
-
-# ======================== Third Part: Main  ========================
-def main():
-    # Read cmd
-    print(sys.argv)
-    if len(sys.argv) != 6:
-        print("Usage: python your_script.py <your climate database. db> <cityname> <start_year> <end_year> <RMY_save_path.xlsx>")
-        print("Cityname & start_year & end_year should be in the climate database.")
-        sys.exit(1)
-    
-    db_path = sys.argv[1]
-    cityname = sys.argv[2]
-    start_ID = int(sys.argv[3])
-    end_ID = int(sys.argv[4])
-    # Target save file path
-    output_excel_savename = sys.argv[4]
-    
+def process_single_city(db_path, cityname, start_ID, end_ID, weights_list, output_excel_savename):
     # db_path = "ClimateData-fivecities-6.db"
     # db_path = "Typical_cities_AMY.db"
     conn = sqlite3.connect(db_path)
@@ -399,7 +383,7 @@ def main():
     conn.close()
     df_weather_data_final = extract_weather_data(df_city)
     # Year_list = turn_into_daily(Data_Feature["Year"].values, "mean")
-    print(df_weather_data_final.head())
+    # print(df_weather_data_final.head())
     
     # Daily statistics
     AVE_temp_daily = turn_into_daily(df_weather_data_final["t"].values, "mean")
@@ -469,7 +453,7 @@ def main():
     df_weather_data_final['day_of_year'] = (df_weather_data_final.index // 24) % 365 + 1
     
     # RMY selection parameters: Mean DBT, Minimum DBT, Maximum DBT, Mean VP, Total GHI, Mean Ground Temperature, Mean WS
-    weights_list = [2/16, 1/16, 1/16, 2/16, 8/16, 1/16, 1/16]
+    # weights_list = [2/16, 1/16, 1/16, 2/16, 8/16, 1/16, 1/16]
     select_days_list = [31,]
     df_selected_year_list = []
     for select_days in select_days_list:          
@@ -525,7 +509,7 @@ def main():
         df_selected_year_list.append(df_selected_year)
     
     # Write into different sheets of the excel
-    folder_path = "ERA5_RMY/"+"RMY_"+str(start_ID) + "_" + str(end_ID) + "_" +cityname
+    folder_path = "RMY_data/"+"RMY_"+str(start_ID) + "_" + str(end_ID) + "_" +cityname
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     output_excel_path = os.path.join(folder_path, output_excel_savename)
@@ -552,6 +536,40 @@ def main():
             df_sorted.to_excel(writer, sheet_name=str(sheet_name), index=False)
             
     print(f"Data is successfully written into {output_excel_path}")
+
+# ======================== Third Part: Main  ========================
+def main():
+    print(sys.argv)
+    if len(sys.argv) != 6:
+        print("Usage: python your_script.py <your climate database. db> <cityname or .csv file> <start_year> <end_year> <RMY_save_path.xlsx>")
+        sys.exit(1)
+
+    db_path = sys.argv[1]
+    cityname_or_file = sys.argv[2]
+    start_ID = int(sys.argv[3])
+    end_ID = int(sys.argv[4])
+    output_excel_base = sys.argv[5]
+    weights_list = [2/16, 1/16, 1/16, 2/16, 8/16, 1/16, 1/16]
+    
+    if cityname_or_file.endswith(".csv"):
+        # 读取 CSV 文件中的所有城市,需保存在第一列
+        city_df = pd.read_csv(cityname_or_file)
+        city_list = city_df.iloc[:, 0].dropna().unique().tolist()
+    else:
+        city_list = [cityname_or_file]
+
+    for cityname in city_list:
+        print(f"Processing city: {cityname}")
+        try:
+            # 如果是 .xlsx 文件名，则插入城市名
+            if output_excel_base.endswith(".xlsx"):
+                output_excel_name = output_excel_base.replace(".xlsx", f"_{cityname}.xlsx")
+            else:
+                output_excel_name = f"{output_excel_base}_{cityname}.xlsx"
+            process_single_city(db_path, cityname, start_ID, end_ID, weights_list, output_excel_name)
+        except Exception as e:
+            print(f"Failed to process {cityname}: {e}")
+    
     
 
 if __name__ == "__main__":
